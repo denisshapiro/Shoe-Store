@@ -1,6 +1,13 @@
 extends layout
 
 block content
-    h1= title
-    p= brand
-    p= brand_shoes
+
+    div.row
+        each shoe in brand_shoes
+            div.card.mb-3.ml-3(style="width: 18rem;")
+                img.card-img-top(src= '../' + shoe.image)
+                div.card-body.d-flex.flex-column
+                    h5.card-title #{shoe.name}
+                    p.card-text #{shoe.description}
+                    h6.card-text #{shoe.formatPrice}
+                    a.btn.btn-outline-primary.stretched-link.mt-auto(href="/shoe/" + shoe._id) See More

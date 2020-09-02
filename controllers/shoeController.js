@@ -89,7 +89,7 @@ exports.shoe_create_post = [
                         break;
                     }
                 }
-                res.render('shoe_form', { title: 'Create Shoe', brands:brands, shoe:shoe, errors:errors.array() });
+                res.render('shoe_form', { title: 'Create Shoe', brand_list:brands, shoe:shoe, errors:errors.array() });
             });
             return;
         }
@@ -128,47 +128,29 @@ exports.shoe_delete_post = function(req, res) {
 };
 
 exports.shoe_update_get = function(req, res) {
-        Shoe.findById(req.params.id).populate('brand').exec(function(err, shoe){
+    async.parallel({
+        shoe: function(callback) {
+            Shoe.findById(req.params.id).populate('brand').exec(callback);
+        },
+        brands: function(callback) {
+            Brand.find(callback);
+        },
+        }, function(err, results) {
             if (err) { return next(err); }
-            if (shoe==null) {
+            if (results.shoe ==null) {
                 var err = new Error('Shoe not found');
                 err.status = 404;
                 return next(err);
             }
-            
             for (var brandIDX = 0; brandIDX < results.genres.length; all_g_iter++) {
                 for (var book_g_iter = 0; book_g_iter < results.book.genre.length; book_g_iter++) {
                     if (results.genres[all_g_iter]._id.toString()==results.book.genre[book_g_iter]._id.toString()) {
                         results.genres[all_g_iter].checked='true';
                     }
                 }
-            }
-            
-            res.render('shoe_form', { title: 'Update Shoe', shoe: shoe });
+            }   
+            res.render('shoe_form', { title: 'Update Shoe', shoe: results.shoe, brand_list: results.brand });
         });
-
-        async.parallel({
-            shoe: function(callback) {
-                Shoe.findById(req.params.id).populate('brand').exec(callback);
-            },
-            brands: function(callback) {
-                Brand.find(callback);
-            },
-            }, function(err, results) {
-                if (err) { return next(err); }
-                if (results.shoe ==null) {
-                    var err = new Error('Shoe not found');
-                    err.status = 404;
-                    return next(err);
-                }
-                for (var brandIDX = 0; brandIDX < results.brands.length; ++brandIDX) {
-                        if (results.brands[brandIDX]._id.toString()==results.shoe.brand._id.toString()) {
-                            results.brands[brandIDX].checked='true';
-                            break;
-                        }
-                }
-                res.render('book_form', { title: 'Update Book', authors: results.authors, genres: results.genres, book: results.book });
-            });
 };
 
 exports.shoe_update_post = [

@@ -5,7 +5,7 @@ block content
     div.row
         each shoe in shoe_list
             div.card.mb-3.ml-3(style="width: 18rem;")
-                img.card-img-top(src= shoe.image)
+                img.card-img-top(src= '../' + shoe.image)
                 div.card-body.d-flex.flex-column
                     h5.card-title #{shoe.name}
                     p.card-text #{shoe.description}
