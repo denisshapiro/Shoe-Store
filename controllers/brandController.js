@@ -13,14 +13,19 @@ exports.brand_list = function(req, res) {
     });
 }
 
-exports.brand_detail = function(req, res) {
+exports.brand_detail = function(req, res, next) {
+    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+        var err = new Error('Invalid Brand ID');
+        err.status = 404;
+        return next(err);
+    }   
     async.parallel({
         brand: function(callback) {
             Brand.findById(req.params.id)
               .exec(callback);
         },
 
-        brand_shoes: function(callback) {
+        brand_shoes: function(callback) { 
             Shoe.find({ 'brand': req.params.id })
               .exec(callback);
         },
