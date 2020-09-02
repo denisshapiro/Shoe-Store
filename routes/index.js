@@ -31,6 +31,8 @@ router.get('/shoe/:id', shoeController.shoe_detail);
 // GET request for list of all Book items.
 router.get('/shoes', shoeController.shoe_list);
 
+router.post('/shoe/:id/', shoeController.shoe_buy);
+
 /// BRAND ROUTES ///
 
 // GET request for creating a Genre. NOTE This must come before route that displays Genre (uses id).

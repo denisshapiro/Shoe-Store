@@ -51,21 +51,17 @@ exports.shoe_create_get = function(req, res) {
     Brand.find()
     .exec(function(err, brands){
         if (err) { return next(err); }
-        res.render('shoe_form', { title: 'Create Shoe', brands: brands });
+        res.render('shoe_form', { title: 'Create Shoe', brand_list: brands });
     });
 }
 
 exports.shoe_create_post = [
-
-    // Validate fields.
     validator.check('name', 'name must not be empty.').trim().isLength({ min: 1 }),
     validator.check('description', 'Description must not be empty.').trim().isLength({ min: 1 }),
     validator.check('image', 'Image must not be empty.').trim().isLength({ min: 1 }),  
 
     validator.body('name').escape(),
     validator.body('description').escape(),
-    // Sanitize fields (using wildcard).
-  //  validator.body('*').escape(),
 
   (req, res, next) => {
         const errors = validationResult(req);
@@ -187,7 +183,7 @@ exports.shoe_update_post = [
                         break;
                     }
                 }
-                res.render('shoe_form', { title: 'Create Shoe', brands:brands, shoe:shoe, errors:errors.array() });
+                res.render('shoe_form', { title: 'Create Shoe', brand_list: brands, shoe:shoe, errors:errors.array() });
             });
             return;
         }
@@ -199,3 +195,25 @@ exports.shoe_update_post = [
         }
     }
 ];
+
+exports.shoe_buy = function(req, res, next) {
+    Shoe.findById(req.params.id).exec(function(err, shoe){
+        if (err) { return next(err); }
+        var newStock = shoe.stock - req.body.purchaseAmount;
+        var newShoe = new Shoe(
+            { name: shoe.name,
+              description: shoe.description,
+              brand: shoe.brand,
+              price: shoe.price,
+              stock: newStock,
+              sizes: shoe.sizes,
+              image: shoe.image,
+              _id: req.params.id
+             });
+        Shoe.findByIdAndUpdate(req.params.id, newShoe, function (err, theShoe) {
+            if (err) { return next(err); }
+            res.redirect(theShoe.url);
+        });
+    });
+}
+       

@@ -9,12 +9,16 @@ html
     nav.navbar.navbar-expand-lg.navbar-dark.green-bg.fixed-top
       a.navbar-brand(href="/") Home
       ul.navbar-nav
-       <!-- a.btn.btn-outline-light(href="/brands") Brands --!>
         li.nav-item.dropdown
           a.nav-link.dropdown-toggle(href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Brands
           div.dropdown-menu(aria-labelledby="navbarDropdown")
             each brand in brand_list
               a.dropdown-item(href="/brand/" + brand._id) #{brand.name}
+      ul.nav.ml-auto
+        li.nav-item.mr-sm-2
+          a.btn.btn-outline-light(href="/brand/create") New Brand
+        li.nav-item.my-2.my-sm-0
+          a.btn.btn-outline-light(href="/shoe/create") New Shoe
     br
 
     div
@@ -24,4 +28,4 @@ html
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-
+  <script src="../javascripts/index.js"></script>

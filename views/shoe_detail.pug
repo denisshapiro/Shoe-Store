@@ -1,5 +1,30 @@
 extends layout
 
 block content
-  h1= title
-  p= shoe
+  div.container
+    div.row.justify-content-center
+        div.col
+            img.img-fluid(src='../' + shoe.image)
+        div.col-md-7.text-center.align-self-center
+            h5= shoe.description
+            h3= shoe.formatPrice
+            if shoe.stock > 0
+                h6.text-success= shoe.stock + " in stock"
+            else
+                h6.text-danger <strong>OUT OF STOCK</strong>
+
+            form(action='' method='POST')
+                div.form-group.row.justify-content-center
+                    div.col-2
+                        input.form-control(type="number" value="0" name="purchaseAmount" id="purchaseAmount" min="0" max= shoe.stock)
+                    div.dropdown.mr-sm-2
+                        button.btn.btn-secondary.dropdown-toggle(type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Size
+                        div.dropdown-menu(aria-labelledby="dropdownMenuButton")
+                            if shoe.stock > 0
+                                each num in shoe.sizes
+                                    a.dropdown-item(href="#") #{num}
+                    if shoe.stock > 0
+                        button.btn.btn-primary.my-sm-0(type='submit') Buy
+                    else
+                        button.btn.btn-primary.my-sm-0(type='submit' disabled) Buy
+    

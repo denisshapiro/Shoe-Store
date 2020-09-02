@@ -44,7 +44,10 @@ exports.brand_detail = function(req, res, next) {
 }
 
 exports.brand_create_get = function(req, res) {
-    res.render('brand_form', { title: 'Create Brand' });
+    Brand.find().exec(function(err, brands){
+        if (err) { return next(err); }
+        res.render('brand_form', { title: 'Create Brand', brand_list: brands });
+    });
 }
 
 exports.brand_create_post = [
@@ -59,8 +62,11 @@ exports.brand_create_post = [
       );
   
       if (!errors.isEmpty()) {
-        res.render('brand_form', { title: 'Create Brand', brand: brand, errors: errors.array()});
-        return;
+        Brand.find().exec(function(err, brands){
+            if (err) { return next(err); }
+            res.render('brand_form', { title: 'Create Brand', brand: brand, errors: errors.array(), brand_list: brands});
+            return;
+        });
       }
       else {
         Brand.findOne({ 'name': req.body.name })
