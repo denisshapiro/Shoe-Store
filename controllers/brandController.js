@@ -30,6 +30,10 @@ exports.brand_detail = function(req, res, next) {
               .exec(callback);
         },
 
+        allbrands: function(callback) {
+            Brand.find().exec(callback);
+        },
+
     }, function(err, results) {
         if (err) { return next(err); }
         if (results.brand==null) { 
@@ -37,7 +41,7 @@ exports.brand_detail = function(req, res, next) {
             err.status = 404;
             return next(err);
         }
-        res.render('brand_detail', { title: 'Shoes by ' + results.brand.name, brand: results.brand, brand_shoes: results.brand_shoes } );
+        res.render('brand_detail', { title: 'Shoes by ' + results.brand.name, brand: results.brand, brand_shoes: results.brand_shoes, brand_list: results.allbrands } );
     });
 }
 

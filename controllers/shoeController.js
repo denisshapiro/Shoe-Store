@@ -8,11 +8,16 @@ exports.index = function(req, res) {
 }
 
 exports.shoe_list = function(req, res) {
-    Shoe.find()
-    .populate('brand')
-    .exec(function (err, list_shoes) {
-      if (err) { return next(err); }
-      res.render('shoe_list', { title: 'Shoes in Store', shoe_list: list_shoes });
+    async.parallel({
+        shoes: function(callback) {
+            Shoe.find().populate('brand').exec(callback);
+        },
+        brands: function(callback) {
+            Brand.find(callback);
+        },
+    }, function(err, results) {
+        if (err) { return next(err); }
+        res.render('shoe_list', { title: 'Shoes in Store', shoe_list: results.shoes, brand_list: results.brands });
     });
 }
 
@@ -21,17 +26,24 @@ exports.shoe_detail = function(req, res, next) {
         var err = new Error('Invalid Shoe ID');
         err.status = 404;
         return next(err);
-    }   
-    Shoe.findById(req.params.id)
-    .populate('brand')
-    .exec(function(err, shoe){
+    }
+    
+    async.parallel({
+        shoe: function(callback) {
+            Shoe.findById(req.params.id).populate('brand').exec(callback);
+        },
+        brands: function(callback) {
+            Brand.find(callback);
+        },
+    }, function(err, results) {
         if (err) { return next(err); }
-        if (!shoe) {
+        if (err) { return next(err); }
+        if (!results.shoe) {
             var err = new Error('Author not found');
             err.status = 404;
             return next(err);
         }
-        res.render('shoe_detail', { title: shoe.name, shoe: shoe } );
+        res.render('shoe_detail', { title: results.shoe.name, shoe: results.shoe, brand_list: results.brands } );
     });
 }
 

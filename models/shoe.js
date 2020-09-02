@@ -15,10 +15,22 @@ var ShoeSchema = new Schema(
     }
   );
 
+var formatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  minimumFractionDigits: 2
+})
+
 ShoeSchema
 .virtual('url')
 .get(function(){
   return '/shoe/' + this._id;
+});
+
+ShoeSchema
+.virtual('formatPrice')
+.get(function(){
+  return formatter.format(this.price);
 });
 
 //Export model
