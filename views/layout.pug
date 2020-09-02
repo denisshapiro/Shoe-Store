@@ -12,6 +12,7 @@ html
         li.nav-item.dropdown
           a.nav-link.dropdown-toggle(href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Brands
           div.dropdown-menu(aria-labelledby="navbarDropdown")
+            - brand_list.sort(function(a, b) {let textA = a.name.toUpperCase(); let textB = b.name.toUpperCase(); return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;});
             each brand in brand_list
               a.dropdown-item(href="/brand/" + brand._id) #{brand.name}
       ul.nav.ml-auto

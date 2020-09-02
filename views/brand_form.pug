@@ -1,4 +1,16 @@
 extends layout
 
 block content
-   
+    .container.mt-5.col-4
+        .row
+            .col
+                h2.text-center.mb-3.mt-5 What brand would you like to add?
+                .p-3.shadow
+                    form(method='POST', action='')
+                        .form-group
+                            input.form-control(type='text', name='name', placeholder='Name', value=(undefined==="message" ? '' : ""))
+                        .text-center
+                            button.btn.btn-primary.text-center(type='submit') Submit
+                        if errors
+                            for error in errors
+                                .alert.alert-info.mt-4!= error.msg

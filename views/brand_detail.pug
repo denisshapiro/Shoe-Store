@@ -1,7 +1,6 @@
 extends layout
 
 block content
-
     div.row
         each shoe in brand_shoes
             div.card.mb-3.ml-3(style="width: 18rem;")
@@ -11,3 +10,10 @@ block content
                     p.card-text #{shoe.description}
                     h6.card-text #{shoe.formatPrice}
                     a.btn.btn-outline-primary.stretched-link.mt-auto(href="/shoe/" + shoe._id) See More
+    div(style ="position: absolute; bottom: 1em;right:1em;")
+        form(action=brand.url+'/delete/' method='POST')
+            if brand_shoes.length > 0
+                button.btn.btn-danger(type='submit' disabled) Delete Brand
+            else
+                button.btn.btn-danger(type='submit') Delete Brand
+

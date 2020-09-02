@@ -69,7 +69,7 @@ exports.brand_create_post = [
         });
       }
       else {
-        Brand.findOne({ 'name': req.body.name })
+        Brand.findOne({'name': req.body.name })
           .exec( function(err, found_brand) {
              if (err) { return next(err); }
              if (found_brand) {
@@ -106,21 +106,21 @@ exports.brand_delete_get = function(req, res) {
 exports.brand_delete_post = function(req, res) {
     async.parallel({
         brand: function(callback) {
-          Brand.findById(req.body.brandID).exec(callback)
+          Brand.findById(req.params.id).exec(callback)
         },
         brand_shoes: function(callback) {
-          Shoe.find({ 'brand': req.body.brandID }).exec(callback)
+          Shoe.find({ 'brand': req.params.id }).exec(callback)
         },
     }, function(err, results) {
         if (err) { return next(err); }
         if (results.brand_shoes.length > 0) {
-            res.render('brand_delete', { title: 'Delete Brand', brand: results.brand, brand_shoes: results.brand_shoes } );
+            res.redirect(results.brand.url);
             return;
         }
         else {
-            Brand.findByIdAndRemove(req.body.brandID, function deleteBrand(err) {
+            Brand.findByIdAndRemove(req.params.id, function deleteBrand(err) {
                 if (err) { return next(err); }
-                res.redirect('/brands')
+                res.redirect('/shoes')
             })
         }
     });
