@@ -4,7 +4,7 @@ block content
   div.container
     div.row.justify-content-center
         div.col
-            img.img-fluid(src='../' + shoe.image)
+            img.img-fluid(id="displayshoe" src='../' + shoe.image)
         div.col-md-7.text-center.align-self-center
             h5= shoe.description
             h3= shoe.formatPrice
@@ -27,4 +27,8 @@ block content
                         button.btn.btn-primary.my-sm-0(type='submit') Buy
                     else
                         button.btn.btn-primary.my-sm-0(type='submit' disabled) Buy
+    div(style ="position: absolute; bottom: 1em;right:1em;")
+        form(action=shoe.url+'/delete/' method='POST')
+            button.btn.btn-danger(type='submit') Delete Shoe
+
     

@@ -8,7 +8,7 @@ block content
                 .p-3.shadow
                     form(method='POST', action='')
                         .form-group
-                            input.form-control(type='text', name='name', placeholder='Name', value=(undefined==="message" ? '' : ""))
+                            input.form-control(type='text', name='name', placeholder='Name')
                         .text-center
                             button.btn.btn-primary.text-center(type='submit') Submit
                         if errors

@@ -58,13 +58,14 @@ exports.shoe_create_get = function(req, res) {
 exports.shoe_create_post = [
     validator.check('name', 'name must not be empty.').trim().isLength({ min: 1 }),
     validator.check('description', 'Description must not be empty.').trim().isLength({ min: 1 }),
-    validator.check('image', 'Image must not be empty.').trim().isLength({ min: 1 }),  
+    validator.check('price', 'Price must not be empty.').trim().trim().isNumeric(),
 
     validator.body('name').escape(),
     validator.body('description').escape(),
 
   (req, res, next) => {
-        const errors = validationResult(req);
+        const errors = validator.validationResult(req);
+        var file_url = `images/${req.file.filename}`
         var shoe = new Shoe(
           { name: req.body.name,
             description: req.body.description,
@@ -72,19 +73,19 @@ exports.shoe_create_post = [
             price: req.body.price,
             stock: req.body.stock,
             sizes: req.body.sizes,
-            image: req.body.image
+            image: file_url
            });
-
         if (!errors.isEmpty()) {
             Brand.find()
             .exec(function(err, brands){
                 if (err) { return next(err); }
+                /*
                 for (let i = 0; i < brands.length; i++) {
                     if (shoe.brand.indexOf(brands[i]._id) > -1) {
                         brands[i].checked='true';
                         break;
                     }
-                }
+                } */
                 res.render('shoe_form', { title: 'Create Shoe', brand_list:brands, shoe:shoe, errors:errors.array() });
             });
             return;
@@ -92,8 +93,8 @@ exports.shoe_create_post = [
         else {
             shoe.save(function (err) {
                 if (err) { return next(err); }
-                   res.redirect(shoe.url);
-                });
+                res.redirect(shoe.url);
+            });
         }
     }
 ];
@@ -103,7 +104,7 @@ exports.shoe_delete_get = function(req, res, next) {
         var err = new Error('Invalid Shoe ID');
         err.status = 404;
         return next(err);
-    }   
+    }
     Shoe.findById(req.params.id).exec(function(err, shoe){
         if (err) { return next(err); }
         if (shoe==null) {
@@ -114,16 +115,18 @@ exports.shoe_delete_get = function(req, res, next) {
 };
 
 exports.shoe_delete_post = function(req, res) {
-    Shoe.findById(req.body.shoeid).exec(function(err, shoe){
+    Shoe.findById(req.params.id).exec(function(err, shoe){
         if (err) { return next(err); }
+        var brand = shoe.brand;
+        var image = shoe.image;
         Shoe.findByIdAndRemove(shoe._id, function deleteShoe(err) {
             if (err) { return next(err); }
-            res.redirect('/shoes')
+            res.redirect(`/brand/${brand}`)
         });
     });
 };
 
-exports.shoe_update_get = function(req, res) {
+exports.shoe_update_get = function(req, res) { 
     async.parallel({
         shoe: function(callback) {
             Shoe.findById(req.params.id).populate('brand').exec(callback);
