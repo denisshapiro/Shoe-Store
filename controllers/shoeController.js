@@ -61,7 +61,7 @@ exports.shoe_create_post = [
     validator.check('price', 'Price must not be empty.').trim().trim().isNumeric(),
 
     validator.body('name').escape(),
-    validator.body('description').escape(),
+   // validator.body('description').escape(),
 
   (req, res, next) => {
         const errors = validator.validationResult(req);
@@ -79,13 +79,7 @@ exports.shoe_create_post = [
             Brand.find()
             .exec(function(err, brands){
                 if (err) { return next(err); }
-                /*
-                for (let i = 0; i < brands.length; i++) {
-                    if (shoe.brand.indexOf(brands[i]._id) > -1) {
-                        brands[i].checked='true';
-                        break;
-                    }
-                } */
+
                 res.render('shoe_form', { title: 'Create Shoe', brand_list:brands, shoe:shoe, errors:errors.array() });
             });
             return;
@@ -99,21 +93,6 @@ exports.shoe_create_post = [
     }
 ];
 
-exports.shoe_delete_get = function(req, res, next) {
-    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
-        var err = new Error('Invalid Shoe ID');
-        err.status = 404;
-        return next(err);
-    }
-    Shoe.findById(req.params.id).exec(function(err, shoe){
-        if (err) { return next(err); }
-        if (shoe==null) {
-            res.redirect('/shoes');
-        }
-        res.render('shoe_delete', { title: 'Delete Shoe', shoe: shoe } );
-    });
-};
-
 exports.shoe_delete_post = function(req, res) {
     Shoe.findById(req.params.id).exec(function(err, shoe){
         if (err) { return next(err); }
@@ -126,45 +105,16 @@ exports.shoe_delete_post = function(req, res) {
     });
 };
 
-exports.shoe_update_get = function(req, res) { 
-    async.parallel({
-        shoe: function(callback) {
-            Shoe.findById(req.params.id).populate('brand').exec(callback);
-        },
-        brands: function(callback) {
-            Brand.find(callback);
-        },
-        }, function(err, results) {
-            if (err) { return next(err); }
-            if (results.shoe ==null) {
-                var err = new Error('Shoe not found');
-                err.status = 404;
-                return next(err);
-            }
-            for (var brandIDX = 0; brandIDX < results.genres.length; all_g_iter++) {
-                for (var book_g_iter = 0; book_g_iter < results.book.genre.length; book_g_iter++) {
-                    if (results.genres[all_g_iter]._id.toString()==results.book.genre[book_g_iter]._id.toString()) {
-                        results.genres[all_g_iter].checked='true';
-                    }
-                }
-            }   
-            res.render('shoe_form', { title: 'Update Shoe', shoe: results.shoe, brand_list: results.brand });
-        });
-};
-
 exports.shoe_update_post = [
-   
-    // Validate fields.
     validator.check('name', 'name must not be empty.').trim().isLength({ min: 1 }),
     validator.check('description', 'Description must not be empty.').trim().isLength({ min: 1 }),
     validator.check('image', 'Image must not be empty.').trim().isLength({ min: 1 }),  
-    // Sanitize fields (using wildcard).
-  //  validator.body('*').escape(),
+
     validator.body('name').escape(),
     validator.body('description').escape(),
 
   (req, res, next) => {
-        const errors = validationResult(req);
+        const errors = validator.validationResult(req);
         var shoe = new Shoe(
           { name: req.body.name,
             description: req.body.description,
@@ -193,8 +143,8 @@ exports.shoe_update_post = [
         else {
             shoe.save(function (err) {
                 if (err) { return next(err); }
-                   res.redirect(shoe.url);
-                });
+                res.redirect(shoe.url);
+            });
         }
     }
 ];

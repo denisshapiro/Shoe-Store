@@ -3,16 +3,6 @@ var Shoe = require('../models/shoe');
 var async = require('async');
 const validator = require('express-validator');
 
-exports.brand_list = function(req, res) {
-    Brand.find()
-    .populate('brand')
-    .sort([['name', 'ascending']])
-    .exec(function(err, listBrands){
-        if(err) { return async.next(err); }
-          res.render('brand_list', {title: 'Brands in Store', brand_list: listBrands });
-    });
-}
-
 exports.brand_detail = function(req, res, next) {
     if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
         var err = new Error('Invalid Brand ID');
@@ -85,23 +75,6 @@ exports.brand_create_post = [
       }
     }
   ];
-
-exports.brand_delete_get = function(req, res) {
-    async.parallel({
-        brand: function(callback) {
-            Brand.findById(req.params.id).exec(callback)
-        },
-        shoes: function(callback) {
-          Shoe.find({ 'brand': req.params.id }).exec(callback)
-        },
-    }, function(err, results) {
-        if (err) { return next(err); }
-        if (results.brand==null) { 
-            res.redirect('/brands');
-        }
-        res.render('brand_delete', { title: 'Delete Brand', brand: results.brand.name, shoes: results.shoes } );
-    });
-};
 
 exports.brand_delete_post = function(req, res) {
     async.parallel({
