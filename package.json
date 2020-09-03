@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "async": "^3.2.0",
+    "aws-sdk": "^2.745.0",
     "compression": "^1.7.4",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
@@ -22,6 +23,7 @@
     "mongoose": "^5.10.2",
     "morgan": "~1.9.1",
     "multer": "^1.4.2",
+    "multer-s3": "^2.9.0",
     "nodemon": "^2.0.4",
     "pug": "2.0.0-beta11"
   }

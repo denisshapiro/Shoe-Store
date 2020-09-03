@@ -1,6 +1,16 @@
 var express = require('express');
 var router = express.Router();
 var multer  = require('multer')
+var aws = require('aws-sdk')
+const multerS3 = require('multer-s3');
+
+aws.config.update({
+  accessKeyId: 'AKIAJVYR7HZIVKVEHF5Q',
+  secretAccessKey: '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',
+  region: 'us-east-2'
+});
+
+const s3 = new aws.S3();
 
 const storage = multer.diskStorage({
   destination: "./public/images",
@@ -9,7 +19,19 @@ const storage = multer.diskStorage({
   },
 });
 
-var upload = multer({ storage, limits: { fileSize: 10000000 } })
+//var upload = multer({ storage: s3Storage, limits: { fileSize: 10000000 } })
+
+const upload = multer({
+  storage: multerS3({
+      s3: s3,
+      acl: 'public-read',
+      bucket: 'shoestoreinventory',
+      key: function (req, file, cb) {
+          console.log(file);
+          cb(null, file.originalname); //use Date.now() for unique file keys
+      }
+  })
+});
 
 // Require controller modules.
 var shoeController = require('../controllers/shoeController');

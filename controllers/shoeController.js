@@ -65,7 +65,7 @@ exports.shoe_create_post = [
 
   (req, res, next) => {
         const errors = validator.validationResult(req);
-        var file_url = `images/${req.file.filename}`
+        var file_url = req.file.location;
         var shoe = new Shoe(
           { name: req.body.name,
             description: req.body.description,
@@ -79,7 +79,6 @@ exports.shoe_create_post = [
             Brand.find()
             .exec(function(err, brands){
                 if (err) { return next(err); }
-
                 res.render('shoe_form', { title: 'Create Shoe', brand_list:brands, shoe:shoe, errors:errors.array() });
             });
             return;
